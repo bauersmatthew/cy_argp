@@ -38,6 +38,7 @@ bool process_next_token(int& i)
 {
 	cy::argp_arg a; // next argp_arg to put in g_processed_args
 	token t = g_tokens.at(i);
+	i++;
 	if(!t.is_cmd)
 		return false; // no params allowed without commands first
 	// check that command is registered
@@ -76,12 +77,10 @@ bool process_next_token(int& i)
 	{
 		// good to go
 		g_processed_args.push_back(a);
-		i++; // remember to increment counter
 		return true;
 	}
 	// else, process the parameter
-	i++; // move on to the next token, which SHOULD be a parameter.
-	if(i++ >= g_tokens.size())
+	if(i >= g_tokens.size())
 	{
 		// no parameter given; error
 		return false;
@@ -102,7 +101,11 @@ bool process_next_token(int& i)
 	}
 	if(type == cy::argp_type::ARGP_TYPE_INTEGER)
 	{
-		// check that it is actually an integer (by trying to convert)
+		// check that it is actually an integer (by trying to convert), also check for . in string
+		if(p.str.find_first_of('.') != std::string::npos)
+		{ // . found, not an int
+			return false;
+		}
 		if(!((std::stringstream(p.str)) >> a.param.p_integer))
 		{
 			// not an int; error
@@ -168,15 +171,17 @@ bool add_to_token_list(const std::string& arg)
 		g_tokens.push_back(t);
 		return true;
 	}
-	// else
+	// else could be any of them
 	if(arg.at(0) == '-')
-	{
+	{ // command
 		t.is_cmd = true;
 		if(arg.at(1) == '-')
 		{
 			// double
 			t.is_single = false;
-			t.str = arg.substr(2, arg.size()-2); // the rest is the string
+			t.str = arg.substr(2); // the rest is the string
+			g_tokens.push_back(t);
+			return true;
 		}
 		else
 		{
@@ -187,6 +192,7 @@ bool add_to_token_list(const std::string& arg)
 				t.str = arg.at(i);
 				g_tokens.push_back(t);
 			}
+			return true;
 		}
 	}
 	else
