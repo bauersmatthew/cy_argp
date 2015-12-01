@@ -1,4 +1,5 @@
 #!/bin/bash
 g++ -std=c++1y -c src/cy_argp.cpp
+mkdir bin #first time run
 ar rvs bin/cy_argp.a cy_argp.o
 rm cy_argp.o
