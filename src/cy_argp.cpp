@@ -207,7 +207,7 @@ bool add_to_token_list(const std::string& arg)
 	return false;
 }
 
-bool cy::argp_begin(int argc, const char **argv)
+bool cy::argp_begin(int argc, char **argv)
 {
 	for(int i = 1; i < argc; i++)
 	{
