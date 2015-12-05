@@ -14,7 +14,7 @@ namespace cy
 	// version
 	const uint8_t ARGP_VER_MAJ = 1;
 	const uint8_t ARGP_VER_MIN = 0;
-	const uint8_t ARGP_VER_PAT = 0;
+	const uint8_t ARGP_VER_PAT = 1;
 	const char *ARGP_VER_STR = "1.0.0";
 	
 	// structures
@@ -51,7 +51,7 @@ namespace cy
 	void argp_clear_registry();
 	
 	// processing args
-	bool argp_begin(int argc, const char **argv); // argc and argv straight from main! If returns false, bad usage
+	bool argp_begin(int argc, char **argv); // argc and argv straight from main! If returns false, bad usage
 	bool argp_next(argp_arg& next); // returns false when no args are present
 	void argp_end();
 };
